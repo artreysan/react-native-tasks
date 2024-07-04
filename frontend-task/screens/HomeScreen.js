@@ -2,6 +2,7 @@ import { View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getTasks} from '../api.js';
 import TaskList from '../components/TaskList.js';
+import Layout from '../components/Layout.js'
 
 const HomeScreen = () => {
 
@@ -17,12 +18,12 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <View>
+    <Layout>
       <TaskList
         tasks={tasks}
       ></TaskList>
 
-    </View>
+    </Layout>
   )
 }
 
