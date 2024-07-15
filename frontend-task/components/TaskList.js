@@ -1,13 +1,40 @@
-import { View, Text, FlatList } from 'react-native';
-import React from 'react';
+import { FlatList, RefreshControl } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {getTasks, deleteTask} from '../api.js';
 import Taskitem from './TaskItem.js'
+import { useIsFocused } from '@react-navigation/native';
 
 
-const TaskList = ({ tasks }) => {
+const TaskList = () => {
+
+  const [tasks, setTasks] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const loadTasks = async () => {
+    const data = await getTasks();
+    setTasks(data);
+  }
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    loadTasks();
+  }, [isfocused]);
+
+  const onRefresh = async ()=>{
+      setRefreshing(true);
+      await loadTasks();
+      setRefreshing(false);
+    }
+  
+    const handleDelete = async (id) => {
+      await deleteTask(id);
+      await loadTasks();
+    }
 
   const renderItem = ({item}) =>{
     return (
-      <Taskitem task={item}></Taskitem>
+      <Taskitem task={item} handleDelete={handleDelete}></Taskitem>
         );
   };
 
@@ -17,6 +44,13 @@ const TaskList = ({ tasks }) => {
       data={tasks}
       keyExtractor={(item) => item.id + ''}
       renderItem={renderItem}
+      refreshControl={
+        <RefreshControl
+        colors={["#78e08f"]}
+        refreshing = {refreshing}
+        onRefresh={onRefresh}
+        />
+      }
     />
   );
 }

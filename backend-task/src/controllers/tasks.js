@@ -24,7 +24,6 @@ export const saveTask = async (req, res) => {
     const [response ] = await db.query('INSERT INTO tasks (title, description_task) VALUES (?,?)', [
         req.body.title, 
         req.body.description_task]);
-        console.log(response);
     res.json({
         id: response.insertId,
         ... req.body
